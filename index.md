@@ -754,11 +754,11 @@ const isValid = function (s) {
 };
 ```
 
-**栈问题-每日温度问题**
+**栈问题-每日温度问题** (比较有意思的题)
 
 > 题目描述: 根据每日气温列表，请重新生成一个列表，对应位置的输出是需要再等待多久温度才会升高超过该日的天数。如果之后都不会升高，请在该位置用 0 来代替。
 
-关键字：栈递减问题、最小栈
+关键字：递减栈、并且存的是下标
 
 ```js
 const dailyTemperatures = function (T) {
@@ -870,9 +870,9 @@ MyQueue.prototype.empty = function () {
 };
 ```
 
-**双端队列 -- 滑动窗口**
+**双端队列 -- 滑动窗口** (有待进一步研究)
 双端队列就是允许在队列的两端继续插入和删除的队列
-双端队列法，核心思路是维护一个有效的递减队列 (有待再熟悉熟悉)
+双端队列法，核心思路是维护一个有效的递减队列 递减队列存放的是下标元素
 
 ```js
 const maxSlidingWindow = function (nums, k) {
@@ -881,6 +881,7 @@ const maxSlidingWindow = function (nums, k) {
   let arr = []; // 存放所有窗口的最大值
   for (let i = 0; i < len; i++) {
     if (queue[0] < i - k + 1) queue.shift(); // 这个要注意一下，出队时机
+    // 维护递减栈
     if (queue.length === 0 || nums[queue[queue.length - 1]] >= nums[i]) {
       queue.push(i);
     } else {
@@ -889,6 +890,7 @@ const maxSlidingWindow = function (nums, k) {
       }
       queue.push(i);
     }
+    // i 从k-1位置之后，窗口每滑动一次，就有一个最大值进来
     if (i >= k - 1) {
       arr.push(nums[queue[0]]);
     }
@@ -920,6 +922,8 @@ const maxSlidingWindow = function (nums, k) {
 广度优先 和 队列有着密不可分的关系
 
 **BFS 实战: 二叉树的层序遍历**
+
+关键字：层序遍历就是百分百的广度优先遍历
 
 ```js
 function BFS(root) {
@@ -976,7 +980,9 @@ function zigzagLevelOrder = function(root) {
 }
 ```
 
-**全排列问题**
+**全排列问题** (值得再看)
+
+dfs， 栈， 递归
 
 > 给定一个没有重复数字的序列，返回其所有可能的全排列
 
@@ -1055,7 +1061,10 @@ const subsets = function (nums) {
 ... 待做
 
 **迭代法 先序遍历**
-当一道题 明明可以用递归做出来，但是突然让你用迭代，此时，你要本能的往栈上想
+
+> 当一道题明明可以用递归做出来，但是突然让你用迭代，此时，你要本能的往栈上想
+
+结构上非常类似 bfs，但是使用的是栈而不是队列
 
 ```js
 const preorderTraversal = function (root) {
@@ -1085,7 +1094,7 @@ const preorderTraversal = function (root) {
 };
 ```
 
-**迭代法 后续遍历**
+**迭代法 后续遍历** (有待进一步研究)
 (好烦这题...)
 
 ```js
@@ -1121,6 +1130,8 @@ BST: 左子树上**所有节点**的数据域都小于等于根结点的数据�
 
 **查找二叉树中的某一结点的值**
 
+递归查找
+
 ```js
 const search(root, n) {
   if (!root) {
@@ -1137,8 +1148,8 @@ const search(root, n) {
 }
 ```
 
-**插入结点**
-(前提，所有结点都是独一无二的)
+**插入结点**  
+(前提，所有结点都是独一无二的) 插入的也是叶子结点
 
 ```js
 const add(root, n) {
@@ -1177,6 +1188,7 @@ function deleteNode(root, n) {
 ```
 
 **注意：二叉搜索树的中序遍历序列是有序的**
+？？
 
 ```js
 const sortedArrayToBST = function (nums) {
@@ -1212,7 +1224,8 @@ const sortedArrayToBST = function (nums) {
 
 **求一个二叉搜索树的第 K 小值**
 用二分法来查找 时间复杂度 O(logn)
-二叉搜索树的中序遍历 就是从小到大顺序排列的
+二叉搜索树的中序遍历(递归法) 就是从小到大顺序排列的
+(这个有意思！)
 
 ```js
 let arr = [];
@@ -1393,6 +1406,24 @@ function finonacci(n) {
 }
 ```
 
+```js
+var fib = function (n) {
+  if (n === 0) return 0;
+  if (n === 1) return 1;
+  const MOD = 1000000007;
+  let f = [];
+  f[0] = 0;
+  f[1] = 1;
+  for (let i = 2; i <= n; i++) {
+    f[i] = f[i - 1] + f[i - 2];
+    if (f[i] > MOD) {
+      f[i] = f[i] % MOD;
+    }
+  } // 0 1 2 3
+  return f[n];
+};
+```
+
 **爬楼梯**
 
 ```js
@@ -1402,6 +1433,7 @@ function climb(n) {
   f[2] = 2;
 
   for (let i = 2; i <= n; i++) {
+    // 注意：这里有等号
     f[i] = f[i - 1] + f[i - 2];
   }
 
@@ -1514,6 +1546,7 @@ function mergeArr(arr1, arr2) {
     }
   }
 
+  // 这个直接省略了循环这一层
   if (l1 < len1) {
     return arr.concat(arr1.slice(l1));
   } else {
@@ -1523,9 +1556,9 @@ function mergeArr(arr1, arr2) {
 ```
 
 **快排**
-快排和归并思维类似，只不过，快排设立的中间值要求，小的就放在左边，大的就放在右边...
+快排和归并思维类似，只不过，**快排设立的中间值要求，小的就放在左边，大的就放在右边...**
 
-关键词： 基准 双指针
+关键词： 基准 双指针 递归
 
 平均时间复杂度： O(nlog(n))  
 最好时间复杂度： O(nlog(n))
@@ -1543,12 +1576,15 @@ function quickSort(arr) {
   const length = arr.length;
   if (length === 0) return arr;
 
+  // 找中间值，无视奇偶数
   const midIndex = Math.floor(length / 2);
   const midValue = arr.splice(midIndex, 1)[0];
 
+  // 设置空间
   const left = [];
   const right = [];
 
+  // 二分大法
   for (let i = 0; i < arr.length; i++) {
     const n = arr[i];
     if (n < midValue) {
@@ -1559,7 +1595,7 @@ function quickSort(arr) {
     }
   }
   // 递归...
-  return quickSort(left).concat([midValue], quickSort(right));
+  return quickSort(left).concat([midValue], quickSort(right)); // 这是让左 中 右三个数组合并为一个数组, 注意这里是放置[midValue]
 }
 ```
 
@@ -1621,7 +1657,9 @@ function selectSort(arr) {
   for (let i = 0; i < len; i++) {
     minIndex = i;
     for (let j = i; j < len; j++) {
+      // j = i
       if (arr[j] < arr[minIndex]) {
+        // 找到最小值
         minIndex = j;
       }
     }
@@ -1680,17 +1718,19 @@ var longestCommonPrefix = function(strs) {
 set 大法
 
 ```js
+// 滑动窗口
 var lengthOfLongestSubstring = function (s) {
-  const set = new Set();
-  const len = s.length;
-
-  for (let i = 0; i < len; i++) {
-    while (!set.has(s[right]) && right < len) {
-      set.add(s[right]);
-      right++;
+  let left = 0;
+  let max = 0;
+  let len = s.length;
+  let map = new Map(); // 这里的map就设置的很好，key存值，value存下标
+  for (let right = 0; right < len; right++) {
+    if (map.has(s[right]) && map.get(s[right]) >= left) {
+      left = map.get(s[right]) + 1;
+      // map.delete(s[right])  这样只能删掉一个元素
     }
-    max = Math.max(max, set.size);
-    set.delete(s[i]);
+    max = Math.max(max, right - left + 1);
+    map.set(s[right], right);
   }
   return max;
 };
@@ -1698,10 +1738,33 @@ var lengthOfLongestSubstring = function (s) {
 
 **最长回文子串 力扣 4**
 给你一个字符串 s，找到 s 中最长的回文子串。
-(动态规划)
 
 ```js
-
+// 中心扩散方法
+var longestPalindrome = function (s) {
+  let str = "";
+  let len = s.length;
+  if (s.length < 2) return s;
+  for (let i = 0; i < len; i++) {
+    // 看看以此点为中心散开的字符串是否是奇数长度的字符串
+    helper(i, i);
+    // 看看是否是偶数长度的字符串
+    helper(i, i + 1);
+  }
+  // 两边扩散
+  function helper(left, right) {
+    while (left >= 0 && right < len && s[left] === s[right]) {
+      left--;
+      right++;
+    }
+    // 如果扩散的长度比之前的字符串长度长，则记录新的字符串
+    if (right - left - 1 > str.length) {
+      // 字符串竟然也可以这样使用...
+      str = s.slice(left + 1, right);
+    }
+  }
+  return str;
+};
 ```
 
 **迭代法实现 前中后序遍历**
@@ -1709,7 +1772,7 @@ var lengthOfLongestSubstring = function (s) {
 将递归 转换成 栈结构来解决问题
 
 **前序**
-while 循环 + 栈进出
+结构类似 bfs + 栈进出
 
 ```js
 const preorder = function (root) {
@@ -1764,9 +1827,10 @@ const postorder = function (root) {
 };
 ```
 
-**中序遍历**
+**中序遍历** (值得多看看)
 
 左 -> 根 -> 右
+关键字：双循环
 
 ```js
 const midorder = function (root) {
@@ -1813,6 +1877,8 @@ function bfs(root) {
 }
 ```
 
+**此题值得多看看**
+
 ```js
 const levelOrder = function (root) {
   const res = [];
@@ -1824,7 +1890,7 @@ const levelOrder = function (root) {
   queue.push(root);
   while (queue.length) {
     const level = [];
-    const len = queue.length;
+    const len = queue.length; // 这里的步骤挺有意思的
     for (let i = 0; i < len; i++) {
       const top = queue.shift();
       level.push(top.val);
@@ -1843,6 +1909,8 @@ const levelOrder = function (root) {
 
 **反转二叉树**
 递归，交换
+
+还是一个 dfs
 
 ```js
 const invertTree = function (root) {
@@ -1921,6 +1989,8 @@ var lengthOfLongestSubstring = function (s) {
 
 **合并二叉树**
 
+dfs + 节点填补
+
 ```js
 var mergeTrees = function (root1, root2) {
   if (!root1 && root2) {
@@ -1960,7 +2030,7 @@ var mergeTrees = function (root1, root2) {
 
 ```js
 var compareVersion = function (version1, version2) {
-  const arr1 = version1.split(".");
+  const arr1 = version1.split("."); // 注意是split 而不是 join
   const arr2 = version2.split(".");
 
   while (arr1.length && arr2.length) {
@@ -1971,7 +2041,7 @@ var compareVersion = function (version1, version2) {
     if (n1 < n2) return -1;
   }
   if (arr1.length) {
-    return arr1.every((item) => Number(item) === 0) ? 0 : 1;
+    return arr1.every((item) => Number(item) === 0) ? 0 : 1; // every 方法很有意思
   }
   if (arr2.length) {
     return arr2.every((item) => Number(item) === 0) ? 0 : -1;
@@ -2004,13 +2074,13 @@ var getIntersectionNode = function (headA, headB) {
 ```js
 var merge = function (intervals) {
   // 先排序减少一些复杂问题
-  intervals = intervals.sort((a, b) => a[0] - b[0]);
+  intervals = intervals.sort((a, b) => a[0] - b[0]); // 对于数组的处理，很多时候都要考虑考虑排序问题
   let len = intervals.length;
   let res = [];
   let cur = [];
   for (let i = 0; i < len; i++) {
     if (cur.length === 0) {
-      cur = intervals[i].slice();
+      cur = intervals[i].slice(); // 这里的获取副本也是很不错的
     } else if (cur[1] >= intervals[i][0] && cur[1] < intervals[i][1]) {
       // 这里是重点
       cur[1] = intervals[i][1];
@@ -2036,7 +2106,7 @@ var maxAreaOfIsland = function (grid) {
   for (let i = 0; i < x; i++) {
     for (let j = 0; j < y; j++) {
       if (grid[i][j] === 1) {
-        max = Math.max(max, dfs(grid, i, j, x, y));
+        max = Math.max(max, dfs(grid, i, j, x, y)); // 注意：这里传入的参数是很多的
       }
     }
   }
@@ -2045,7 +2115,7 @@ var maxAreaOfIsland = function (grid) {
 
 function dfs(grid, i, j, x, y) {
   if (i < 0 || i >= x || j < 0 || j >= y || grid[i][j] == 0) return 0;
-  let count = 1;
+  let count = 1; // 自己设置的count
   grid[i][j] = 0; // 下次就不能再计算这个小岛了
   // 四个方向递归
   count += dfs(grid, i + 1, j, x, y);
@@ -2110,4 +2180,202 @@ var addTwoNumbers = function (l1, l2) {
 
 **最长公共子序列**
 
-**不同路径**
+**不同路径(没有障碍的版本)**
+
+```js
+//  这里是没有障碍的
+var uniquePaths = function (m, n) {
+  // 二维数组创建
+  // dp[i][j]   表示到下标为i 和 j的地方的路径数
+  let dp = new Array(m).fill(0).map(() => new Array(n).fill(0));
+
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      if (i == 0 || j == 0) dp[i][j] = 1;
+      else dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+    }
+  }
+  return dp[m - 1][n - 1];
+};
+```
+
+**二叉树求路径和**
+
+```js
+var binaryTreePaths = function (root) {
+  const res = [];
+  // let str = '';
+  // 使用dfs
+  function dfs(node, str) {
+    if (!node.left && !node.right) {
+      res.push(str);
+      return;
+    }
+    str = `${str}->`;
+    if (node.left) {
+      dfs(node.left, `${str}${node.left.val}`);
+    }
+    if (node.right) {
+      dfs(node.right, `${str}${node.right.val}`);
+    }
+  }
+  dfs(root, `${root.val}`);
+  return res;
+};
+```
+
+**路径总和 力扣 112**
+dfs 来解决
+
+```js
+var hasPathSum = function (root, targetSum) {
+  if (!root) return false;
+  // 此题使用dfs
+  let flag = false;
+  function dfs(node, curNum) {
+    // 注意：必须要到叶子结点(审题！)
+    if (curNum === 0 && !node.left && !node.right) {
+      flag = true;
+    }
+    if (!node) return;
+
+    if (node.left) {
+      dfs(node.left, curNum - node.left.val);
+    }
+    if (node.right) {
+      dfs(node.right, curNum - node.right.val);
+    }
+  }
+
+  dfs(root, targetSum - root.val);
+  return flag;
+};
+```
+
+**螺旋矩阵**
+
+```js
+const spiralOrder = (matrix) => {
+  if (matrix.length == 0) return [];
+  const res = [];
+  // 分别代表上下左右
+  let top = 0;
+  let bottom = matrix.length - 1;
+  let left = 0;
+  let right = matrix[0].length - 1;
+
+  while (top < bottom && left < right) {
+    for (let i = left; i < right; i++) res.push(matrix[top][i]); // 上行  注意这里是<right 而不是<=right
+    for (let i = top; i < bottom; i++) res.push(matrix[i][right]); // 右列  注意这里是<bottom 而不是<=bottom
+    for (let i = right; i > left; i--) res.push(matrix[bottom][i]); // 下行  注意这里是<left 而不是<=left
+    for (let i = bottom; i > top; i--) res.push(matrix[i][left]); // 左列  注意这里是<top 而不是<=top
+    right--;
+    top++;
+    bottom--;
+    left++;
+  }
+  // 成一条线的情况
+  if (top == bottom) {
+    // 剩下一行，从左到右依次添加
+    for (let i = left; i <= right; i++) {
+      res.push(matrix[top][i]);
+    }
+  } else if (left == right) {
+    // 剩下一列，从上到下依次添加
+    for (let i = top; i <= bottom; i++) {
+      res.push(matrix[i][left]);
+    }
+  }
+  return res;
+};
+```
+
+**整数反转**
+
+```js
+var reverse = function (x) {
+  if (x === 0) return 0;
+  const reverseStr = String(Math.abs(x)).split("").reverse();
+  let res = 0;
+  if (x > 0) {
+    res += Number(reverseStr.join("")); // Number(00123) -->  123
+  } else {
+    res -= Number(reverseStr.join(""));
+  }
+  if (res < Math.pow(-2, 31) || res > Math.pow(2, 31) - 1) {
+    // Math.pow
+    res = 0;
+  }
+  return res;
+};
+```
+
+**剑指 Offer 64. 求 1+2+…+n**
+
+```js
+// 求递归
+var sumNums = function (n) {
+  return n && n + sumNums(n - 1);
+};
+```
+
+**打家劫舍**
+
+```js
+var rob = function (nums) {
+  let len = nums.length;
+  if (len === 0) return 0;
+  let dp = new Array(len + 1); // 不要dp[0] 这种情况
+  // dp[i] 表示 到第i家的时候的最高金额
+  dp[0] = 0; // 忽略 dp[0]
+  dp[1] = nums[0];
+  // 动态规划必是for循环
+  for (let i = 2; i <= len; i++) {
+    // 注意一点细节
+    dp[i] = Math.max(dp[i - 2] + nums[i - 1], dp[i - 1]); // 这里才是关键
+  }
+  // 肯定是偷到最后钱越多
+  return dp[len];
+};
+```
+
+**买卖股票的最佳时间**
+
+```js
+//  这个也不太算动态规划
+var maxProfit = function (prices) {
+  let len = prices.length;
+  let maxPrice = prices[len - 1]; // 逆推,这里的 maxPrice 其实设置得很好，因为
+  let res = 0;
+
+  for (let i = len - 1; i >= 0; i--) {
+    if (maxPrice > prices[i]) {
+      res = Math.max(res, maxPrice - prices[i]); // 这里算的是最大的差值
+    } else {
+      maxPrice = prices[i];
+    }
+  }
+  return res;
+};
+```
+
+**计算质数**
+
+```js
+//  埃氏筛
+// 如果x是质数，那么大于x的倍数 2x, 3x...一定不是质数
+var countPrimes = function (n) {
+  const isPrime = new Array(n).fill(1); // 先假设所有数字都是质数  1代表质数
+  let res = 0;
+
+  for (let i = 2; i < n; i++) {
+    if (isPrime[i]) {
+      res += 1;
+      for (let j = i * i; j < n; j += i) {
+        isPrime[j] = 0;
+      }
+    }
+  }
+  return res;
+};
+```
